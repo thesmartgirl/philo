@@ -17,13 +17,9 @@ t_philo	*init_philos(t_simulation *sim)
 		philos[i].s_sleep = sim->start_time;
 		philos[i].meals = 0;
 		pthread_mutex_init(&philos[i].meals_mtx, NULL); // per-philo mutex
-		philos[0].forks[1] = philos[i].sim->n_philos;
-		philos[0].forks[0] = 1;
-		if(philos[i].id != 1)
-		{
-			philos[i].forks[0] = philos[i].id - 1;
-			philos[i].forks[1] = philos[i].id;
-		}
+		// Assign forks in circular manner: left fork = id, right fork = (id % n_philos) + 1
+		philos[i].forks[0] = philos[i].id; // left fork (1-indexed)
+		philos[i].forks[1] = (philos[i].id % sim->n_philos) + 1; // right fork (1-indexed, circular)
 		i++;
 	}
 	return (philos);
@@ -32,7 +28,6 @@ t_philo	*init_philos(t_simulation *sim)
 t_philo	*init_sim(int argc, char **argv, t_simulation *sim)
 {
 	t_philo *philos;
-	int i;
 
 	gettimeofday(&sim->start_time, NULL);
 	sim->state = RUNNING;
@@ -47,7 +42,6 @@ t_philo	*init_sim(int argc, char **argv, t_simulation *sim)
 	sim->forks_mtx = init_mutexes(sim->n_philos);
 	if (sim->forks_mtx == NULL)
 		return (NULL);
-    i = 0;
 	philos = init_philos(sim);
 	return (philos);
 }
