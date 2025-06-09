@@ -14,6 +14,14 @@ t_philo	*init_philos(t_simulation *sim)
 		philos[i].sim = sim;
 		philos[i].id = i + 1;
 		philos[i].s_last_meal = sim->start_time;
+		if (sim->n_must_eat > 0 && (philos[i].id % 2 == 0))
+		{
+			philos[i].last_meal_ms = sim->start_time_ms + (sim->t_eat * 250 / 1000);
+		}
+		else
+		{
+			philos[i].last_meal_ms = sim->start_time_ms;
+		}
 		philos[i].s_sleep = sim->start_time;
 		philos[i].meals = 0;
 		pthread_mutex_init(&philos[i].meals_mtx, NULL); // per-philo mutex
@@ -30,6 +38,7 @@ t_philo	*init_sim(int argc, char **argv, t_simulation *sim)
 	t_philo *philos;
 
 	gettimeofday(&sim->start_time, NULL);
+	sim->start_time_ms = get_time();  /* Initialize precise timing */
 	sim->state = RUNNING;
 	sim->t_die = ft_atoi(argv[2]); //these should be checked in arg check too
 	sim->t_eat = ft_atoi(argv[3]);

@@ -29,15 +29,17 @@ static int	enough_eating(t_simulation *sim, t_philo *philos)
 static int	any_ph_dead(t_simulation *sim, t_philo *philos)
 {
 	int	i;
+	long long current_time;
 
 	i = 0;
+	current_time = get_time();
 	while (i < sim->n_philos)
 	{
 		pthread_mutex_lock(&philos[i].meals_mtx);
-		if (t_since(philos[i].s_last_meal) >= sim->t_die)
+		if ((current_time - philos[i].last_meal_ms) >= sim->t_die)
 		{
 			pthread_mutex_unlock(&philos[i].meals_mtx);
-			safe_print(&philos[i], "died", t_since(sim->start_time));
+			safe_print(&philos[i], "died", elapsed_ms(sim));
 			return (1);
 		}
 		pthread_mutex_unlock(&philos[i].meals_mtx);

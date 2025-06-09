@@ -15,6 +15,7 @@ typedef struct s_simulation
     e_sim_state			state;
     pthread_mutex_t state_mtx;
     struct timeval	start_time;
+    long long		start_time_ms;  /* Start time in milliseconds for precise timing */
     int n_philos;
     int t_die;
     int t_eat;
@@ -30,6 +31,7 @@ typedef struct s_philo
     int				forks[2];
     int             meals;
     struct timeval	s_last_meal;
+    long long		last_meal_ms;  /* Last meal time in milliseconds for precise timing */
     struct timeval  s_sleep;
     pthread_mutex_t meals_mtx; 
     t_simulation	*sim;
@@ -57,8 +59,11 @@ t_philo *init_sim(int argc, char **argv, t_simulation *sim);
 
 //utils.c
 int check_sim_state(t_philo *philo);
-void safe_print(t_philo *philo, char *activity, long ts);
+void safe_print(t_philo *philo, char *activity, long long ts);
 long	t_since(struct timeval t);
+long long	get_time(void);
+void	precise_sleep(long long time_in_ms);
+long long	elapsed_ms(t_simulation *sim);
 
 //sim.c
 void	run_simulation(t_simulation *sim, t_philo *philos);

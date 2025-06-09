@@ -34,15 +34,15 @@ int	check_arg(int argc, char **argv)
 	}
 	return (ft_atoi(argv[1]));
 }
-//Sleep in short intervals to check for STOPPED
+//Sleep in short intervals to check for STOPPED using precise timing
 static void	short_naps(t_philo *p, int ms)
 {
-    struct timeval	start;
+    long long	start_time;
 
-	gettimeofday(&start, NULL);
-	while (t_since(start) < ms)
+	start_time = get_time();
+	while ((get_time() - start_time) < ms)
 	{
-		usleep(200);  /* Reduced interval for better precision */
+		usleep(100);  /* Optimized interval for better precision */
 		pthread_mutex_lock(&p->sim->state_mtx);
 		if (p->sim->state != RUNNING)
 		{
@@ -65,9 +65,10 @@ void p_eat(t_philo *p)
 	if (p->sim->n_philos == 1)
 	{
 		pthread_mutex_lock(&p->sim->forks_mtx[f1]);
-		safe_print(p, "has taken a fork", t_since(p->sim->start_time));
-		safe_print(p, "is eating", t_since(p->sim->start_time));
+		safe_print(p, "has taken a fork", elapsed_ms(p->sim));
+		safe_print(p, "is eating", elapsed_ms(p->sim));
 		pthread_mutex_lock(&p->meals_mtx);
+		p->last_meal_ms = get_time();
 		p->meals++;
 		gettimeofday(&p->s_last_meal, NULL);
 		pthread_mutex_unlock(&p->meals_mtx);
@@ -94,7 +95,7 @@ void p_eat(t_philo *p)
 	pthread_mutex_unlock(&p->sim->state_mtx);
 
 	pthread_mutex_lock(&p->sim->forks_mtx[f1]);
-	safe_print(p, "has taken a fork", t_since(p->sim->start_time));
+	safe_print(p, "has taken a fork", elapsed_ms(p->sim));
 	
 	/* Check state again before acquiring second fork */
 	pthread_mutex_lock(&p->sim->state_mtx);
@@ -107,12 +108,16 @@ void p_eat(t_philo *p)
 	pthread_mutex_unlock(&p->sim->state_mtx);
 	
 	pthread_mutex_lock(&p->sim->forks_mtx[f2]);
-	safe_print(p, "has taken a fork", t_since(p->sim->start_time));
-	safe_print(p, "is eating", t_since(p->sim->start_time));
+	safe_print(p, "has taken a fork", elapsed_ms(p->sim));
+	safe_print(p, "is eating", elapsed_ms(p->sim));
+	
+	/* Update meal time when actually starting to eat */
 	pthread_mutex_lock(&p->meals_mtx);
+	p->last_meal_ms = get_time();
 	p->meals++;
 	gettimeofday(&p->s_last_meal, NULL);
 	pthread_mutex_unlock(&p->meals_mtx);
+	
 	short_naps(p, p->sim->t_eat);
 	pthread_mutex_unlock(&p->sim->forks_mtx[f2]);
 	pthread_mutex_unlock(&p->sim->forks_mtx[f1]);
@@ -120,7 +125,7 @@ void p_eat(t_philo *p)
 
 void p_sleep(t_philo *p)
 {
-	safe_print(p, "is sleeping", t_since(p->sim->start_time));
+	safe_print(p, "is sleeping", elapsed_ms(p->sim));
 	short_naps(p, p->sim->t_sleep);
 }
 
@@ -128,11 +133,12 @@ void p_think(t_philo *p)
 {
 	int think_time;
 	
-	safe_print(p, "is thinking", t_since(p->sim->start_time));
+	safe_print(p, "is thinking", elapsed_ms(p->sim));
 	
 	if (p->sim->n_must_eat > 0)
 	{
-		think_time = p->sim->t_eat / 20;
+		/* For meal counting scenarios, minimize thinking time to avoid death in tight timing */
+		think_time = 1;
 	}
 	else if (p->sim->n_philos == 5)
 	{
@@ -166,7 +172,9 @@ void	*thread_func(void *arg)
 	if (p->sim->n_must_eat > 0)
 	{
 		if (p->id % 2 == 0)
+		{
 			usleep(p->sim->t_eat * 250);
+		}
 	}
 	else if (p->sim->n_philos == 5)
 	{
