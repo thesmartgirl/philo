@@ -62,7 +62,6 @@ void	run_simulation(t_simulation *sim, t_philo *philos)
 			pthread_mutex_unlock(&sim->state_mtx);
 			break;
 		}
-		        usleep(1000);  // Add this to prevent busy loop & reduce starvation
-
+		usleep(100);  /* Reduced monitoring interval for better responsiveness */
 	}
 }
