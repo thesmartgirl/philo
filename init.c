@@ -17,6 +17,7 @@ t_philo	*init_philos(t_simulation *sim)
 		philos[i].s_sleep = sim->start_time;
 		philos[i].meals = 0;
 		pthread_mutex_init(&philos[i].meals_mtx, NULL); // per-philo mutex
+		//assign
 		philos[0].forks[1] = philos[i].sim->n_philos;
 		philos[0].forks[0] = 1;
 		if(philos[i].id != 1)

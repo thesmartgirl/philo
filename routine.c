@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ataan <ataan@student.42amman.com>          +#+  +:+       +#+        */
+/*   By: ataan <ataan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 14:17:48 by ataan             #+#    #+#             */
-/*   Updated: 2025/06/26 14:18:05 by ataan            ###   ########.fr       */
+/*   Updated: 2025/07/27 19:14:23 by ataan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,16 @@ void	p_eat(t_philo *p)
 	int	f1;
 	int	f2;
 
-	f1 = p->forks[0] - 1;
-	f2 = p->forks[1] - 1;
+	if (p->id %2 != 0)
+	{
+		f1 = p->forks[0] - 1;
+		f2 = p->forks[1] - 1;
+	}
+	else
+	{
+		f2 = p->forks[0] - 1;
+		f1 = p->forks[1] - 1;
+	}
 	pthread_mutex_lock(&p->sim->forks_mtx[f1]);
 	safe_print(p, "has taken a fork", t_since(p->sim->start_time));
 	pthread_mutex_lock(&p->sim->forks_mtx[f2]);
@@ -60,6 +68,7 @@ void	p_sleep(t_philo *p)
 
 void	p_think(t_philo *p)
 {
+	usleep(500);
 	safe_print(p, "is thinking", t_since(p->sim->start_time));
 }
 

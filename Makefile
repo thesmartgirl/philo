@@ -3,7 +3,7 @@ RM = rm -rf
 CFLAGS = -Wall -Wextra -Werror
 
 SRC = philo.c \
-	  ft_atoi.c init.c mutex.c sim.c threads.c utils.c 
+	  ft_atoi.c mutex.c sim.c threads.c utils.c routine.c init.c
 
 OBJ = $(SRC:.c=.o)
 

@@ -26,7 +26,7 @@ typedef struct s_simulation
 
 typedef struct s_philo
 {
-    int				id;
+    _Atomic int				id;
     int				forks[2];
     int             meals;
     struct timeval	s_last_meal;
@@ -53,8 +53,7 @@ void destroy_all_mutexes(t_simulation *sim, t_philo *philos);
 
 //init.c
 t_philo *init_philos(t_simulation *sim);
-t_philo *init_sim(int argc, char **argv, t_simulation *sim);
-
+t_philo	*init_sim(int argc, char **argv, t_simulation *sim);
 //utils.c
 int check_sim_state(t_philo *philo);
 void safe_print(t_philo *philo, char *activity, long ts);
