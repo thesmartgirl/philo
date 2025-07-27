@@ -14,16 +14,14 @@ typedef struct s_simulation
 {
     e_sim_state			state;
     pthread_mutex_t state_mtx;
-    pthread_mutex_t print_mtx;
-    pthread_mutex_t *forks_mtx;
     struct timeval	start_time;
     int n_philos;
     int t_die;
     int t_eat;
     int t_sleep;
     int n_must_eat;
-    int mtx_count;
-    pthread_mutex_t mutexes[1000];
+    pthread_mutex_t *forks_mtx;
+    pthread_mutex_t print_mtx;
 } t_simulation;
 
 typedef struct s_philo
@@ -42,8 +40,6 @@ int	ft_atoi(const char *nptr);
 
 //philo.c
 void *thread_func(void *arg);
-int create_mutex(pthread_mutex_t *mutex, t_simulation *sim);
-void destroy_all_mutexes(t_simulation *sim);
 
 //threads.c
 pthread_t *create_threads(int n, t_philo *philos);
@@ -51,9 +47,9 @@ void join_threads(pthread_t *threads, int n);
 pthread_t *malloc_thread_ids(int n);
 
 //mutex.c
-pthread_mutex_t	*init_mutexes(int n, t_simulation *sim);
+pthread_mutex_t *init_mutexes(int n);
 void destroy_mutexes(pthread_mutex_t *mutexes, int n);
-// void destroy_all_mutexes(t_simulation *sim, t_philo *philos);
+void destroy_all_mutexes(t_simulation *sim, t_philo *philos);
 
 //init.c
 t_philo *init_philos(t_simulation *sim);

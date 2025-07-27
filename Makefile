@@ -1,9 +1,8 @@
 CC = cc
 RM = rm -rf
-CFLAGS = -Wall -Wextra -Werror -g3
+CFLAGS = -Wall -Wextra -Werror
 
 SRC = philo.c \
-	  routine.c \
 	  ft_atoi.c init.c mutex.c sim.c threads.c utils.c 
 
 OBJ = $(SRC:.c=.o)

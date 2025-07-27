@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   philo.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ataan <ataan@student.42amman.com>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/26 14:15:35 by ataan             #+#    #+#             */
-/*   Updated: 2025/06/26 14:18:19 by ataan            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "philo.h"
 
 //Argument Checks
@@ -41,15 +29,86 @@ int	check_arg(int argc, char **argv)
 	return (ft_atoi(argv[1]));
 }
 
-void	cleanup(t_simulation *sim, t_philo *philos, pthread_t *threads)
+//Sleep in short intervals to check for STOPPED
+static void	short_naps(t_philo *p, int ms)
 {
-	destroy_all_mutexes(sim);
-	if (sim->forks_mtx)
-		free(sim->forks_mtx);
-	if (philos)
-		free(philos);
-	if (threads)
-		free(threads);
+    struct timeval	start;
+
+	gettimeofday(&start, NULL);
+	while (t_since(start) < ms)
+	{
+		usleep(500);
+		pthread_mutex_lock(&p->sim->state_mtx);
+		if (p->sim->state != RUNNING)
+		{
+			pthread_mutex_unlock(&p->sim->state_mtx);
+			break ;
+		}
+		pthread_mutex_unlock(&p->sim->state_mtx);
+	}
+}
+
+void p_eat(t_philo *p)
+{
+	int f1;
+	int f2;
+
+	f1 = p->forks[0] - 1;
+	f2 = p->forks[1] - 1;
+
+	// printf("forks: %d, %d\n", f1, f2);
+	// if( f1 != f2)
+	// {
+		pthread_mutex_lock(&p->sim->forks_mtx[f1]);
+		safe_print(p, "has taken a fork", t_since(p->sim->start_time));
+		pthread_mutex_lock(&p->sim->forks_mtx[f2]);
+		safe_print(p, "has taken a fork", t_since(p->sim->start_time));
+		safe_print(p, "is eating", t_since(p->sim->start_time));
+		pthread_mutex_lock(&p->meals_mtx);
+		p->meals++;
+		gettimeofday(&p->s_last_meal, NULL);
+		pthread_mutex_unlock(&p->meals_mtx);
+		// printf("t_eat = %d\n", p->sim->t_eat);
+		short_naps(p, p->sim->t_eat);
+		// printf("philo %d finished eating at %ld\n", p->id, t_since(p->sim->start_time));
+		pthread_mutex_unlock(&p->sim->forks_mtx[f2]);
+		pthread_mutex_unlock(&p->sim->forks_mtx[f1]);
+	// }
+}
+
+void p_sleep(t_philo *p)
+{
+	safe_print(p, "is sleeping", t_since(p->sim->start_time));
+	short_naps(p, p->sim->t_sleep);
+}
+
+void p_think(t_philo *p)
+{
+	safe_print(p, "is thinking", t_since(p->sim->start_time));
+}
+
+void	*thread_func(void *arg)
+{
+	t_philo	*p;
+	// long	time;
+	// int		sim_state;
+
+	p = (t_philo *)arg;
+	while (1)
+	{
+		if(p->id % 2 == 0)
+			usleep(500);
+		pthread_mutex_lock(&p->sim->state_mtx);
+		if(p->sim->state != RUNNING)
+		{
+			pthread_mutex_unlock(&p->sim->state_mtx);
+			return NULL;
+		}
+		pthread_mutex_unlock(&p->sim->state_mtx);
+		p_eat(p);
+		p_sleep(p);
+		p_think(p);
+    }
 }
 
 int	main(int argc, char **argv)
@@ -61,22 +120,30 @@ int	main(int argc, char **argv)
 	sim.n_philos = check_arg(argc, argv);
 	if (sim.n_philos == -1)
 		return (-1);
-	philos = NULL;
-	threads = NULL;
 	philos = init_sim(argc, argv, &sim);
 	if (philos == NULL)
 	{
-		cleanup(&sim, philos, threads);
+		//destroy print mutex
+		//destroy state mutex
+		// destroy_mutexes(sim.forks_mtx, sim.n_philos);
+		free(sim.forks_mtx);
 		return (-1);
 	}
 	threads = create_threads(sim.n_philos, philos);
 	if (threads == NULL)
 	{
-		cleanup(&sim, philos, threads);
+		free(philos);
+		//destroy print mutex
+		//destroy state mutex
+		// destroy_mutexes(sim.forks_mtx, sim.n_philos);
+		free(sim.forks_mtx);
 		return (-1);
 	}
 	run_simulation(&sim, philos);
 	join_threads(threads, sim.n_philos);
-	cleanup(&sim, philos, threads);
+	// destroy_mutexes(sim.forks_mtx, sim.n_philos);
+	free(philos);
+	free(sim.forks_mtx);
+	free(threads);
 	return (0);
 }

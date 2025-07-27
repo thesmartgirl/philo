@@ -1,0 +1,56 @@
+timestamp_in_ms 0ms 1 has taken a fork
+timestamp_in_ms 0ms 1 has taken a fork
+timestamp_in_ms 0ms 1 is eating
+timestamp_in_ms 0ms 3 has taken a fork
+timestamp_in_ms 0ms 3 has taken a fork
+timestamp_in_ms 0ms 3 is eating
+timestamp_in_ms 0ms 5 has taken a fork
+timestamp_in_ms 200ms 3 is sleeping
+timestamp_in_ms 201ms 2 has taken a fork
+timestamp_in_ms 201ms 2 has taken a fork
+timestamp_in_ms 201ms 2 is eating
+timestamp_in_ms 201ms 1 is sleeping
+timestamp_in_ms 201ms 4 has taken a fork
+timestamp_in_ms 201ms 5 has taken a fork
+timestamp_in_ms 201ms 5 is eating
+timestamp_in_ms 401ms 1 is thinking
+timestamp_in_ms 401ms 1 has taken a fork
+timestamp_in_ms 401ms 3 is thinking
+timestamp_in_ms 401ms 3 has taken a fork
+timestamp_in_ms 401ms 2 is sleeping
+timestamp_in_ms 401ms 5 is sleeping
+timestamp_in_ms 401ms 4 has taken a fork
+timestamp_in_ms 401ms 4 is eating
+timestamp_in_ms 401ms 1 has taken a fork
+timestamp_in_ms 401ms 1 is eating
+timestamp_in_ms 601ms 2 is thinking
+timestamp_in_ms 601ms 3 has taken a fork
+timestamp_in_ms 601ms 4 is sleeping
+timestamp_in_ms 601ms 1 is sleeping
+timestamp_in_ms 601ms 3 is eating
+timestamp_in_ms 601ms 5 is thinking
+timestamp_in_ms 601ms 5 has taken a fork
+timestamp_in_ms 601ms 5 has taken a fork
+timestamp_in_ms 601ms 5 is eating
+timestamp_in_ms 602ms 2 has taken a fork
+timestamp_in_ms 801ms 4 is thinking
+timestamp_in_ms 801ms 5 is sleeping
+timestamp_in_ms 802ms 1 is thinking
+timestamp_in_ms 802ms 3 is sleeping
+timestamp_in_ms 802ms 4 has taken a fork
+timestamp_in_ms 802ms 2 has taken a fork
+timestamp_in_ms 802ms 2 is eating
+timestamp_in_ms 802ms 4 has taken a fork
+timestamp_in_ms 802ms 4 is eating
+timestamp_in_ms 1000ms 5 is thinking
+timestamp_in_ms 1001ms 2 is sleeping
+timestamp_in_ms 1001ms 4 is sleeping
+timestamp_in_ms 1001ms 5 has taken a fork
+timestamp_in_ms 1001ms 5 has taken a fork
+timestamp_in_ms 1001ms 5 is eating
+timestamp_in_ms 1001ms 3 is thinking
+timestamp_in_ms 1001ms 1 has taken a fork
+timestamp_in_ms 1001ms 3 has taken a fork
+timestamp_in_ms 1001ms 3 has taken a fork
+timestamp_in_ms 1001ms 3 is eating
+timestamp_in_ms 1200ms 1 died
