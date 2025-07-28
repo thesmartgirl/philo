@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mutex.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ataan <ataan@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/28 18:58:49 by ataan             #+#    #+#             */
+/*   Updated: 2025/07/28 18:59:51 by ataan            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 pthread_mutex_t	*init_mutexes(int n)
@@ -14,7 +26,6 @@ pthread_mutex_t	*init_mutexes(int n)
 		if (pthread_mutex_init(&mutexes[i], NULL) != 0)
 		{
 			printf("mutex_create error\n");
-			// destroy any previously initialized mutexes to avoid resource leaks
 			while (--i >= 0)
 				pthread_mutex_destroy(&mutexes[i]);
 			free(mutexes);
@@ -39,9 +50,11 @@ void	destroy_mutexes(pthread_mutex_t *mutexes, int n)
 
 void	destroy_all_mutexes(t_simulation *sim, t_philo *philos)
 {
+	int	i;
+
 	destroy_mutexes(sim->forks_mtx, sim->n_philos);
 	destroy_mutexes(&sim->state_mtx, 1);
-	int i = 0;
+	i = 0;
 	while (i < sim->n_philos)
 	{
 		destroy_mutexes(&philos[i].meals_mtx, 1);

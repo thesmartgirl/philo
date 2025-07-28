@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sim.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ataan <ataan@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/28 19:02:28 by ataan             #+#    #+#             */
+/*   Updated: 2025/07/28 19:12:34 by ataan            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 static int	enough_eating(t_simulation *sim, t_philo *philos)
@@ -8,7 +20,7 @@ static int	enough_eating(t_simulation *sim, t_philo *philos)
 	i = 0;
 	count = 0;
 	if (sim->n_must_eat == -1)
-		return 0;
+		return (0);
 	while (i < sim->n_philos)
 	{
 		pthread_mutex_lock(&philos[i].meals_mtx);
@@ -18,10 +30,7 @@ static int	enough_eating(t_simulation *sim, t_philo *philos)
 		i++;
 	}
 	if (count >= sim->n_philos)
-	{
-		printf("enough meals for everyone\n");
 		return (1);
-	}
 	else
 		return (0);
 }
@@ -55,13 +64,13 @@ void	run_simulation(t_simulation *sim, t_philo *philos)
 {
 	while (1)
 	{
-		if(any_ph_dead(sim, philos) || enough_eating(sim, philos))
+		if (any_ph_dead(sim, philos) || enough_eating(sim, philos))
 		{
 			pthread_mutex_lock(&sim->state_mtx);
-			sim->state= STOPPED;
+			sim->state = STOPPED;
 			pthread_mutex_unlock(&sim->state_mtx);
-			break;
+			break ;
 		}
-		usleep(100);  // Add this to prevent busy loop & reduce starvation
+		usleep(10);
 	}
 }

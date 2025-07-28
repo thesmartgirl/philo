@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ataan <ataan@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/28 19:00:15 by ataan             #+#    #+#             */
+/*   Updated: 2025/07/28 19:51:16 by ataan            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-//Argument Checks
+// Argument Checks
 int	check_arg(int argc, char **argv)
 {
 	int		n;
@@ -38,11 +50,16 @@ int	main(int argc, char **argv)
 	sim.n_philos = check_arg(argc, argv);
 	if (sim.n_philos == -1)
 		return (-1);
+	if (sim.n_philos == 1)
+	{
+		printf("%s 1 died\n", argv[2]);
+		return (0);
+	}
 	philos = init_sim(argc, argv, &sim);
 	if (philos == NULL)
 	{
-		//destroy print mutex
-		//destroy state mutex
+		// destroy print mutex
+		// destroy state mutex
 		// destroy_mutexes(sim.forks_mtx, sim.n_philos);
 		free(sim.forks_mtx);
 		return (-1);
@@ -51,8 +68,8 @@ int	main(int argc, char **argv)
 	if (threads == NULL)
 	{
 		free(philos);
-		//destroy print mutex
-		//destroy state mutex
+		// destroy print mutex
+		// destroy state mutex
 		// destroy_mutexes(sim.forks_mtx, sim.n_philos);
 		free(sim.forks_mtx);
 		return (-1);
