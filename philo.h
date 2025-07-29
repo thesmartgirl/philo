@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ataan <ataan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ataan <ataan@student.42amman.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:50:42 by ataan             #+#    #+#             */
-/*   Updated: 2025/07/28 18:53:13 by ataan            ###   ########.fr       */
+/*   Updated: 2025/07/29 22:22:59 by ataan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,12 @@ void				destroy_all_mutexes(t_simulation *sim, t_philo *philos);
 // init.c
 t_philo				*init_philos(t_simulation *sim);
 t_philo				*init_sim(int argc, char **argv, t_simulation *sim);
+
 // utils.c
-int					check_sim_state(t_philo *philo);
 void				safe_print(t_philo *philo, char *activity, long ts);
 long				t_since(struct timeval t);
+void				cleanup(t_simulation *sim, t_philo *philos,
+						pthread_t *threads);
 
 // sim.c
 void				run_simulation(t_simulation *sim, t_philo *philos);

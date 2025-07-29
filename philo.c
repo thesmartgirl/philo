@@ -3,19 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ataan <ataan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ataan <ataan@student.42amman.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 19:00:15 by ataan             #+#    #+#             */
-/*   Updated: 2025/07/28 19:51:16 by ataan            ###   ########.fr       */
+/*   Updated: 2025/07/29 22:23:18 by ataan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+int	numeric_check(char *s)
+{
+	int	i;
+
+	if (s == NULL)
+		return (0);
+	i = 0;
+	while (s[i] != '\0')
+	{
+		if (!(s[i] >= '0' && s[i] <= '9'))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 // Argument Checks
 int	check_arg(int argc, char **argv)
 {
-	int		n;
 	int		i;
 	char	*param[3];
 
@@ -30,8 +45,7 @@ int	check_arg(int argc, char **argv)
 	i = 1;
 	while (argv[i])
 	{
-		n = ft_atoi(argv[i]);
-		if (n <= 0)
+		if (!numeric_check(argv[i]) || ft_atoi(argv[i]) <= 0)
 		{
 			printf("Please provide a positive integer.\n");
 			return (-1);
@@ -57,28 +71,12 @@ int	main(int argc, char **argv)
 	}
 	philos = init_sim(argc, argv, &sim);
 	if (philos == NULL)
-	{
-		// destroy print mutex
-		// destroy state mutex
-		// destroy_mutexes(sim.forks_mtx, sim.n_philos);
-		free(sim.forks_mtx);
-		return (-1);
-	}
+		cleanup(&sim, philos, NULL);
 	threads = create_threads(sim.n_philos, philos);
 	if (threads == NULL)
-	{
-		free(philos);
-		// destroy print mutex
-		// destroy state mutex
-		// destroy_mutexes(sim.forks_mtx, sim.n_philos);
-		free(sim.forks_mtx);
-		return (-1);
-	}
+		cleanup(&sim, philos, threads);
 	run_simulation(&sim, philos);
 	join_threads(threads, sim.n_philos);
-	// destroy_mutexes(sim.forks_mtx, sim.n_philos);
-	free(philos);
-	free(sim.forks_mtx);
-	free(threads);
+	cleanup(&sim, philos, threads);
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mutex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ataan <ataan@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ataan <ataan@student.42amman.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:58:49 by ataan             #+#    #+#             */
-/*   Updated: 2025/07/28 18:59:51 by ataan            ###   ########.fr       */
+/*   Updated: 2025/07/29 22:13:52 by ataan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ void	destroy_all_mutexes(t_simulation *sim, t_philo *philos)
 	int	i;
 
 	destroy_mutexes(sim->forks_mtx, sim->n_philos);
-	destroy_mutexes(&sim->state_mtx, 1);
+	pthread_mutex_destroy(&sim->state_mtx);
+	pthread_mutex_destroy(&sim->print_mtx);
 	i = 0;
 	while (i < sim->n_philos)
 	{
