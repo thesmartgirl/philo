@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ataan <ataan@student.42amman.com>          +#+  +:+       +#+        */
+/*   By: ataan <ataan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 19:01:54 by ataan             #+#    #+#             */
-/*   Updated: 2025/07/29 22:27:06 by ataan            ###   ########.fr       */
+/*   Updated: 2025/07/30 21:12:03 by ataan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,23 @@ void	cleanup(t_simulation *sim, t_philo *philos, pthread_t *threads)
 		free(sim->forks_mtx);
 	if (threads)
 		free(threads);
+}
+
+// Sleep in short intervals to check for STOPPED
+void	short_naps(t_philo *p, int ms)
+{
+	struct timeval	start;
+
+	gettimeofday(&start, NULL);
+	while (t_since(start) < ms)
+	{
+		usleep(100);
+		pthread_mutex_lock(&p->sim->state_mtx);
+		if (p->sim->state != RUNNING)
+		{
+			pthread_mutex_unlock(&p->sim->state_mtx);
+			break ;
+		}
+		pthread_mutex_unlock(&p->sim->state_mtx);
+	}
 }

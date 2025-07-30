@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ataan <ataan@student.42amman.com>          +#+  +:+       +#+        */
+/*   By: ataan <ataan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:50:42 by ataan             #+#    #+#             */
-/*   Updated: 2025/07/29 22:22:59 by ataan            ###   ########.fr       */
+/*   Updated: 2025/07/30 19:43:26 by ataan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void				safe_print(t_philo *philo, char *activity, long ts);
 long				t_since(struct timeval t);
 void				cleanup(t_simulation *sim, t_philo *philos,
 						pthread_t *threads);
+void				short_naps(t_philo *p, int ms);						
 
 // sim.c
 void				run_simulation(t_simulation *sim, t_philo *philos);

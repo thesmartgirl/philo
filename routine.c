@@ -6,30 +6,11 @@
 /*   By: ataan <ataan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 14:17:48 by ataan             #+#    #+#             */
-/*   Updated: 2025/07/28 19:17:37 by ataan            ###   ########.fr       */
+/*   Updated: 2025/07/30 21:12:19 by ataan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-// Sleep in short intervals to check for STOPPED
-static void	short_naps(t_philo *p, int ms)
-{
-	struct timeval	start;
-
-	gettimeofday(&start, NULL);
-	while (t_since(start) < ms)
-	{
-		usleep(100);
-		pthread_mutex_lock(&p->sim->state_mtx);
-		if (p->sim->state != RUNNING)
-		{
-			pthread_mutex_unlock(&p->sim->state_mtx);
-			break ;
-		}
-		pthread_mutex_unlock(&p->sim->state_mtx);
-	}
-}
 
 void	p_eat(t_philo *p)
 {
@@ -72,14 +53,13 @@ void	p_think(t_philo *p)
 	safe_print(p, "is thinking", t_since(p->sim->start_time));
 }
 
-// void	lonely_diner(t_philo *p)
-// {
-// 	pthread_mutex_lock(&p->sim->forks_mtx[0]);
-// 	safe_print(p, "has taken a fork", t_since(p->sim->start_time));
-// 	short_naps(p, p->sim->t_die);
-// 	pthread_mutex_unlock(&p->sim->forks_mtx[0]);
-// 	return (NULL);
-// }
+void	lonely_diner(t_philo *p)
+{
+	pthread_mutex_lock(&p->sim->forks_mtx[0]);
+	safe_print(p, "has taken a fork", t_since(p->sim->start_time));
+	short_naps(p, p->sim->t_die);
+	pthread_mutex_unlock(&p->sim->forks_mtx[0]);
+}
 
 void	*thread_func(void *arg)
 {
@@ -97,6 +77,11 @@ void	*thread_func(void *arg)
 			return (NULL);
 		}
 		pthread_mutex_unlock(&p->sim->state_mtx);
+		if (p->sim->n_philos == 1)
+		{
+			lonely_diner(p);
+			return (NULL);
+		}
 		p_eat(p);
 		p_sleep(p);
 		p_think(p);

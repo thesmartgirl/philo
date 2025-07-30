@@ -6,7 +6,7 @@
 /*   By: ataan <ataan@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 19:02:05 by ataan             #+#    #+#             */
-/*   Updated: 2025/07/28 19:02:05 by ataan            ###   ########.fr       */
+/*   Updated: 2025/07/30 20:45:36 by ataan            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,14 @@ pthread_t	*create_threads(int n, t_philo *philos)
 	{
 		if (pthread_create(&threads[i], NULL, thread_func, &philos[i]) != 0)
 		{
-			printf("pthread_create error\n");
-			free(threads);
+			pthread_mutex_lock(&philos[0].sim->print_mtx);
+			printf("pthread create error\n");
+			pthread_mutex_unlock(&philos[0].sim->print_mtx);
+			pthread_mutex_lock(&philos[0].sim->state_mtx);
+			philos[0].sim->state = STOPPED;
+			pthread_mutex_unlock(&philos[0].sim->state_mtx);
+			join_threads(threads, i);
+			cleanup(philos[0].sim, philos, threads);
 			return (NULL);
 		}
 		i++;
@@ -38,6 +44,8 @@ void	join_threads(pthread_t *threads, int n)
 {
 	int	i;
 
+	if (threads == NULL)
+		return ;
 	i = 0;
 	while (i < n)
 	{
